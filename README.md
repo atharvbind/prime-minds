@@ -105,9 +105,3 @@ The application is fully responsive and works on:
 * Improve UI styling and animations
 * Add detailed mathematician pages
 * Implement debouncing for search
-
----
-
-Final submission deadline: **10th April**
-
----
