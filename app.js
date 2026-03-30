@@ -1,6 +1,6 @@
 let searchBtn=document.querySelector('button')
 let cards=document.getElementById('cards')
-searchBtn.addEventListener('click',async ()=>{
+let searchHandle = async ()=>{
     try{
         
             let name = document.querySelector('input').value 
@@ -10,8 +10,14 @@ searchBtn.addEventListener('click',async ()=>{
     catch(err) {
         cards.innerHTML="<p>Error</p>"
     }
-
+}
+let input=document.querySelector('input')
+input.addEventListener('keydown',(e)=>{
+    if (e.key=='Enter') {
+        searchBtn.click()
+    }
 })
+searchBtn.addEventListener('click',searchHandle)
 async function getSummary(n) {
     cards.innerHTML=""
   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(n)}`;
