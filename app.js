@@ -19,23 +19,26 @@ input.addEventListener('keydown',(e)=>{
 })
 searchBtn.addEventListener('click',searchHandle)
 async function getSummary(n) {
-    cards.innerHTML=""
+    cards.innerHTML="<h2>Loading</h2>"
   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(n)}`;
   
   const res = await fetch(url);
   if (!res.ok) throw new Error("Not found");
   
   let data=await res.json();
+    cards.innerHTML=""
+    let card=document.createElement('div')
   let name=document.createElement('h1')
   name.innerText=data.title
   if (data.thumbnail) {
       let img=document.createElement('img')
       img.src=data.thumbnail.source
-      cards.appendChild(img)
+      card.appendChild(img)
   }
   let desc=document.createElement('p')
   desc.innerText=data.extract
-  cards.appendChild(name)
-  cards.appendChild(desc)
+  card.appendChild(name)
+  card.appendChild(desc)
+  cards.appendChild(card)
 
 }
