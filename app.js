@@ -1,19 +1,21 @@
 let searchBtn=document.querySelector('button')
 let cards=document.getElementById('cards')
+let input=document.querySelector('input')
+let suggestions=document.getElementById('suggestions')
+let minds=[]
+let displayedMinds = []
+let mathGrid = document.getElementById('math-grid')
 let searchHandle = async ()=>{
     try{
-        let name = document.querySelector('input').value 
+        let name = document.querySelector('input').value
+        input.value=''
+        suggestions.innerHTML=''
         await getSummary(name)
     }
     catch(err) {
         cards.innerHTML="<p>Error</p>"
     }
 }
-
-let input=document.querySelector('input')
-let suggestions=document.getElementById('suggestions')
-let minds=[]
-
 
 async function getMinds() {
     //indina
@@ -35,7 +37,6 @@ async function getMinds() {
         .filter(x => x.ns == 0 && !x.title.toLowerCase().includes('list'))
         .map(x => x.title)
     minds = [...new Set([...arr1, ...arr2, ...arr3])]
-    cards.innerHTML=''
     console.log(minds.length)
     console.log(minds)
 }
@@ -115,7 +116,86 @@ async function getSummary(query) {
   card.appendChild(desc)
   cards.appendChild(card)
 }
+function showRandomCards() {
+    mathGrid.innerHTML = "<p>Loading...</p>"
+    displayedMinds = [...minds]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 20)
+
+    Promise.all(
+        displayedMinds.map(name =>
+            fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`)
+                .then(res => res.json())
+        )
+    ).then(results => {
+        mathGrid.innerHTML = ''
+        fetchedResults = results.filter(data => data.title && data.extract)
+        fetchedResults.forEach(data => {
+                let card = document.createElement('div')
+                card.className = 'math-card'
+                if (data.thumbnail) {
+                    let img = document.createElement('img')
+                    img.src = data.thumbnail.source
+                    card.appendChild(img)
+                } else {
+                    let avatar = document.createElement('div')
+                    avatar.className = 'avatar-placeholder'
+                    let initials = data.title.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase()
+                    avatar.innerText = initials
+                    card.appendChild(avatar)
+                }
+                let name = document.createElement('h3')
+                name.innerText = data.title
+                let desc = document.createElement('p')
+                desc.innerText = data.extract.slice(0, 120) + '...'
+                card.appendChild(name)
+                card.appendChild(desc)
+                mathGrid.appendChild(card)
+            })
+    })
+}
+function renderCards(data) {
+    mathGrid.innerHTML = ''
+    data.forEach(data => {
+        let card = document.createElement('div')
+        card.className = 'math-card'
+        if (data.thumbnail) {
+            let img = document.createElement('img')
+            img.src = data.thumbnail.source
+            card.appendChild(img)
+        } else {
+            let avatar = document.createElement('div')
+            avatar.className = 'avatar-placeholder'
+            let initials = data.title.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase()
+            avatar.innerText = initials
+            card.appendChild(avatar)
+        }
+        let name = document.createElement('h3')
+        name.innerText = data.title
+        let desc = document.createElement('p')
+        desc.innerText = data.extract.slice(0, 120) + '...'
+        card.appendChild(name)
+        card.appendChild(desc)
+        mathGrid.appendChild(card)
+    })
+}
+document.getElementById('btn-az').addEventListener('click', () => {
+    renderCards([...fetchedResults].sort((a, b) => a.title.localeCompare(b.title)))
+})
+document.getElementById('btn-za').addEventListener('click', () => {
+    renderCards([...fetchedResults].sort((a, b) => b.title.localeCompare(a.title)))
+})
+document.getElementById('btn-random').addEventListener('click', () => {
+    renderCards([...fetchedResults].sort(() => Math.random() - 0.5))
+})
+document.getElementById('dark-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark')
+    document.getElementById('dark-toggle').innerText = 
+        document.body.classList.contains('dark') ? 'Light Mode' : 'Dark Mode'
+})
 window.onload = () => {
-    cards.innerHTML = "<h2>Loading mathematicians...</h2>";
-    getMinds();
-};
+    cards.innerHTML = ''
+    getMinds().then(() => {
+        showRandomCards()
+    })
+}
