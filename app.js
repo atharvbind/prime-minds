@@ -70,6 +70,7 @@ async function handleSuggestions() {
         let res = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${val}&limit=5&origin=*`);
         let data=await res.json()
         let results = data[1];
+        console.log(data[2][0])
         results = results.filter(name => {
             let n = name.toLowerCase();
             let words = name.split(" ");

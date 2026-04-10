@@ -2,9 +2,7 @@
 
 ## 📌 Project Overview
 
-**Prime Minds** is a web application that allows users to explore some of the greatest mathematicians in history. The app fetches real-time data from a public API and displays it in a clean, interactive interface.
-
-Users can search, filter, and sort mathematicians to better understand their contributions and historical importance.
+**Prime Minds** is a web application that allows users to explore some of the greatest mathematicians in history. The app fetches real-time data from the Wikipedia API and displays it in a clean, interactive card-based interface.
 
 ---
 
@@ -24,41 +22,37 @@ This project is built to demonstrate:
 The application uses the **Wikipedia API** to fetch data about mathematicians, including:
 
 * Name
-* Image
+* Image (or initials avatar if unavailable)
 * Short description
+
+Two Wikipedia endpoints are used:
+* `Category API` — to fetch lists of Indian, American and British mathematicians
+* `REST Summary API` — to fetch individual mathematician details
 
 ---
 
 ## ✨ Features
 
 ### 🔍 Search
-
-* Search mathematicians by name
-* Implemented using `.filter()`
-
-### 🎯 Filter
-
-* Filter mathematicians based on:
-
-  * Era (Ancient / Modern)
-  * Field (Algebra, Calculus, Geometry)
+* Search mathematicians by name using the search bar
+* Auto-suggestions appear as you type using `.filter()` on the loaded list
+* Falls back to Wikipedia's opensearch API if no local match is found
 
 ### 🔃 Sort
+* Sort the displayed cards:
+  * A → Z alphabetically
+  * Z → A alphabetically
+  * Random shuffle
+* Implemented using `.sort()` with `localeCompare()`
 
-* Sort results:
+### 🃏 Random Cards on Load
+* 20 random mathematician cards are displayed on page load
+* Shuffled using `.sort(() => Math.random() - 0.5)`
+* Cards show image or initials avatar if no image is available
 
-  * Alphabetically
-  * By birth year
-
-### 🖱️ Interactive UI
-
-* Card-based layout displaying mathematicians
-* “View More” option for additional details
-
-### 🌗 Optional Features
-
-* Dark/Light mode toggle
-* Favorites stored using localStorage
+### 🌗 Dark / Light Mode
+* Toggle between dark and light theme
+* Dark mode styled with orange accents inspired by Project Euler
 
 ---
 
@@ -66,8 +60,8 @@ The application uses the **Wikipedia API** to fetch data about mathematicians, i
 
 * HTML5
 * CSS3
-* JavaScript (ES6)
-* Fetch API
+* JavaScript (ES6+)
+* Wikipedia Fetch API
 
 ---
 
@@ -81,27 +75,8 @@ The application is fully responsive and works on:
 
 ---
 
-## ⚙️ How to Run the Project
+## 🔗 Live Demo
 
-1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/prime-minds.git
-   ```
-
-2. Open the project folder:
-
-   ```bash
-   cd prime-minds
-   ```
-
-3. Open `index.html` in your browser
 
 ---
-
-## 📈 Future Improvements
-
-* Add pagination
-* Improve UI styling and animations
-* Add detailed mathematician pages
-* Implement debouncing for search
